@@ -27,7 +27,6 @@ public class Crawler {
 		for (i = 0; i < btn.size(); i++) {
 
 			driver.findElement(By.xpath("(//a[contains(text(),'전력비교')])[" + Integer.toString(i + 2) + "]")).click();
-			i++;
 			String leftTeamRanking = driver
 					.findElement(By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li/div/div/div/em"))
 					.getText();
@@ -66,11 +65,11 @@ public class Crawler {
 					.findElement(By
 							.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[4]/div/div/div[2]/em"))
 					.getText();
-			System.out.println(leftTeam + "		vs	" + rightTeam);
-			System.out.println(leftTeamRanking + "		vs	" + rightTeamRanking);
-			System.out.println(leftTeamParticipants + "		vs	" + rightTeamParticipants);
-			System.out.println(leftTeamBest + "		vs	" + rightTeamBest);
-			System.out.println(leftTeam2014 + "		vs	" + rightTeam2014);
+			System.out.println(leftTeam + "	vs	" + rightTeam);
+			System.out.println(leftTeamRanking + "	vs	" + rightTeamRanking);
+			System.out.println(leftTeamParticipants + "	vs	" + rightTeamParticipants);
+			System.out.println(leftTeamBest + "	vs	" + rightTeamBest);
+			System.out.println(leftTeam2014 + "	vs	" + rightTeam2014);
 			System.out.println("");
 			driver.get("https://sports.news.naver.com/wfootball/schedule/index.nhn?category=russia2018");
 		}
