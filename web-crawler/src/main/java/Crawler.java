@@ -1,105 +1,116 @@
-import com.google.common.collect.Iterables;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by roshanalwis on 9/4/17.
- */
-
 public class Crawler {
 
+	static SearchWord[] words = new SearchWord[20];
+
 	public static void main(String[] args) {
-		int i;
 		System.setProperty("webdriver.chrome.driver", "..\\chromedriver_win32\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 
 		// Maximize browser window
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		// driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-		driver.get("https://sports.news.naver.com/wfootball/schedule/index.nhn?category=russia2018");
-		List<WebElement> btn = driver.findElements(By.xpath("(//a[contains(text(),'전력비교')])"));
+		int i, j, interestPerWord;
+		String temp;
 
-		for (i = 0; i < btn.size(); i++) {
-
-			driver.findElement(By.xpath("(//a[contains(text(),'전력비교')])[" + Integer.toString(i + 2) + "]")).click();
-			String leftTeamRanking = driver
-					.findElement(By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li/div/div/div/em"))
-					.getText();
-			if (leftTeamRanking.equals("-"))
-				break;
-			String leftTeam = driver.findElement(By.xpath("//div[@id='content']/div/div[2]/div/div[2]/strong"))
-					.getText();
-			String rightTeam = driver.findElement(By.xpath("//div[@id='content']/div/div[2]/div[2]/div[2]/strong"))
-					.getText();
-
-			String rightTeamRanking = driver
-					.findElement(
-							By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li/div/div/div[2]/em"))
-					.getText();
-			String leftTeamParticipants = driver
-					.findElement(
-							By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[2]/div/div/div/em"))
-					.getText();
-			String rightTeamParticipants = driver
-					.findElement(By
-							.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[2]/div/div/div[2]/em"))
-					.getText();
-			String leftTeamBest = driver
-					.findElement(
-							By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[3]/div/div/div/em"))
-					.getText();
-			String rightTeamBest = driver
-					.findElement(By
-							.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[3]/div/div/div[2]/em"))
-					.getText();
-			String leftTeam2014 = driver
-					.findElement(
-							By.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[4]/div/div/div/em"))
-					.getText();
-			String rightTeam2014 = driver
-					.findElement(By
-							.xpath("//div[@id='content']/div/div[3]/div[3]/div/div/div[2]/ul/li[4]/div/div/div[2]/em"))
-					.getText();
-			System.out.println(leftTeam + "	vs	" + rightTeam);
-			System.out.println(leftTeamRanking + "	vs	" + rightTeamRanking);
-			System.out.println(leftTeamParticipants + "	vs	" + rightTeamParticipants);
-			System.out.println(leftTeamBest + "	vs	" + rightTeamBest);
-			System.out.println(leftTeam2014 + "	vs	" + rightTeam2014);
-			System.out.println("");
-			driver.get("https://sports.news.naver.com/wfootball/schedule/index.nhn?category=russia2018");
+		driver.get("https://www.facebook.com/");
+		try {
+			driver.findElement(By.id("email")).click();
+			driver.findElement(By.id("email")).clear();
+			driver.findElement(By.id("email")).sendKeys("01075774937");
+			driver.findElement(By.id("pass")).click();
+			driver.findElement(By.id("pass")).clear();
+			driver.findElement(By.id("pass")).sendKeys("wjddnr4937");
+			driver.findElement(By.id("pass")).sendKeys(Keys.ENTER);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		System.out.println(i);
-		// Find the table element using xpath
-		// WebElement table =
-		// driver.findElement(By.xpath("//*[@id=\"maincontent\"]/div[4]/table"));
-		//
-		// // Go through each major version
-		// List<WebElement> mainVersions = table.findElements(By.tagName("tbody"));
-		//
-		// for (WebElement mver : mainVersions) {
-		// for (WebElement ver : mver.findElements(By.tagName("tr"))) {
-		// // Get all anchor tags
-		// List<WebElement> attributes = ver.findElements(By.tagName("a"));
-		//
-		// // Find each relevant web element that contains required information
-		// WebElement version = attributes.get(0);
-		// WebElement repository = attributes.get(1);
-		// WebElement usages = attributes.get(2);
-		// WebElement date = Iterables.getLast(ver.findElements(By.tagName("td")));
-		//
-		// System.out.println("Version : " + version.getText());
-		// System.out.println("Repository : " + repository.getText());
-		// System.out.println("Usages : " + usages.getText());
-		// System.out.println("Date : " + date.getText());
-		// System.out.println("------------------------------");
-		// }
-		//
-		// }
+		driver.get("https://datalab.naver.com/keyword/realtimeList.naver?where=main");
+		for (i = 0; i < 20; i++) {
+			words[i] = new SearchWord();
+			words[i].setRank(i + 1);
+			words[i].setWord(driver.findElement(By.xpath("//div[@id='content']/div/div[3]/div/div/div[4]/div/div/ul/li["
+					+ Integer.toString(i + 1) + "]/a/span")).getText());
+		}
+
+		driver.get("https://www.facebook.com/");
+		for (i = 0; i < 20; i++) {
+			(new WebDriverWait(driver, 30))
+					.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.name("q"))));
+			while (true) {
+				try {
+					driver.findElement(By.name("q")).click();
+					break;
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			interestPerWord = 0;
+			// System.out.println(words[i].getWord());
+			driver.findElement(By.name("q")).sendKeys(words[i].getWord());
+			driver.findElement(By.name("q")).sendKeys(Keys.ENTER);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			List<WebElement> interestElements = driver.findElements(By.className("_4arz"));
+			for (j = 0; j < interestElements.size(); j++) {
+				try {
+					temp = interestElements.get(j).getText();
+					temp = temp.replaceAll("명", "").replaceAll(",", "");
+					if (temp.contains("천")) {
+						interestPerWord += Double.parseDouble(temp.replaceAll("천", "")) * 1000;
+					} else if (temp.contains("만")) {
+						interestPerWord += Double.parseDouble(temp.replaceAll("만", "")) * 10000;
+					} else {
+						interestPerWord += Double.parseDouble(temp);
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.getMessage());
+					continue;
+				}
+			}
+			interestElements = driver.findElements(By.className("_36_q"));
+			for (j = 0; j < interestElements.size(); j++) {
+				try {
+					temp = interestElements.get(j).getText();
+					if (temp.contains("조회")) {
+						continue;
+					}
+					temp = temp.replaceAll("\\s", "").replaceAll("댓글", "").replaceAll("공유", "").replaceAll("개", "")
+							.replaceAll("회", "").replaceAll(",", "");
+					if (temp.contains("천")) {
+						interestPerWord += Double.parseDouble(temp.replaceAll("천", "")) * 1000;
+					} else if (temp.contains("만")) {
+						interestPerWord += Double.parseDouble(temp.replaceAll("만", "")) * 10000;
+					} else {
+						interestPerWord += Double.parseDouble(temp);
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.getMessage());
+					continue;
+				}
+			}
+
+			words[i].addDegree(interestPerWord);
+		}
+
+		for (i = 0; i < 20; i++) {
+			System.out.println(
+					"검색어 " + words[i].getRank() + "위	: " + words[i].getWord() + "    관심도 : " + words[i].getDegree());
+		}
 
 		// Close driver
 		driver.quit();
